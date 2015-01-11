@@ -77,14 +77,14 @@ large files, it is recommended to use the generator functions::
     >>> from jamo import hangul_to_jamo
     >>> long_story = open("구운몽.txt", 'r').read()
     >>> hangul_to_jamo(long_story)
-    <generator at 0x7f31baf89cc0>
+    <generator object <genexpr> at 0x7f00f4166828>
 
 and for HCJ::
 
     >>> from jamo import hangul_to_hcj
     >>> long_story = open("구운몽.txt", 'r').read()
     >>> hangul_to_hcj(long_story)
-    <generator at 0x7f31baf89cc0>
+    <generator object <genexpr> at 0x7f31baf89cc0>
 
 
 .. _Hangul representation in unicode: http://gernot-katzers-spice-pages.com/var/korean_hangul.html
