@@ -4,15 +4,13 @@
 A Guide to using Python-Jamo
 ============================
 
-*DISCLAIMER: This library is still in beta. Some features may not work as
-described.*
-
 `Hangul <https://en.wikipedia.org/wiki/Hangul>`_ is a wonderful writing system.
 Originating in 1443 to represent the Korean language, it is an alphabet of 24
-consonants and vowels, each of which are called **jamo** (자모/字母).
+consonants and vowels, each of which are called **jamo** (자모 aka 字母).
 
 Let's analyze it's phonemes by decomposing some Hangul. Maybe even construct
 some Hangul afterwards.
+
 
 Hangul Decomposition
 --------------------
@@ -22,27 +20,28 @@ decomposition::
 
     >>> from jamo import h2j
     >>> h2j("한굴")
-    ['ᄒ', 'ᅡ', 'ᆫ', 'ᄀ', 'ᅮ', 'ᆯ']
-    >>> h2j("자모=字母")
-    ['ᄌ', 'ᅡ', '\\x00', 'ᄆ', 'ᅩ', '\\x00', '=', '字', '母']
+    '한굴'
 
-That was easy! Notice that the characters may not have rendered correctly. This
-is because there are actually two sets of jamo in Unicode. We printed the
-U+11xx set. The set that computers actually use for *rendering* individual jamo
-characters is in U+31xx. To learn more, read more about `Hangul Compatibility
-Jamo` (here on referenced as HJC). Also related, Gernot Katzers has an
-excellent `writeup on Hangul representation in unicode
-<http://gernot-katzers-spice-pages.com/var/korean_hangul>`_ worth a read.
+Oops! What is that? Notice that the characters may not have rendered correctly.
+This is because there are actually two sets of jamo in Unicode. We printed the
+U+11xx set. The set that computers actually use for **rendering** individual
+jamo characters is called **Hangul Compatibility Jamo**, or **HCJ**. What we
+probably want is::
 
-Say we wanted to get the display characters::
+    >>> from jamo import h2j, j2hcj
+    >>> j2hcj(h2j("한굴"))
+    'ㅎㅏㄴㄱㅜㄹ'
+    >>> j2hcj(h2j("자모=字母"))
+    'ㅈㅏ\x00ㅁㅗ\x00=字母'
 
-    >>> from jamo import h2cj
-    >>> h2cj("한굴")
-    ㅎㅏㄴㄱㅜㄹ
-    >>> h2cj("자모=字母")
-    ㅈㅏㅁㅗ=字母 
+Here we convert the Hangul characters to U+11xx jamo characters, then convert
+those characters to HCJ for proper display. The `\x00` characters are the null
+tails of the hangul characters. This feature may be changed in future releases.
 
-Decomposing Hangul is as simple as that.
+This documentation has a short writeup on `Hangul Compatibility Jamo` (soon).
+Also related, Gernot Katzers has an excellent writeup on
+`Hangul representation in unicode`_ that is well worth a read.
+
 
 Hangul Synthesis
 ----------------
@@ -66,6 +65,8 @@ best to guess what the original Hangul was::
     (False, ...)
 
 Note that when there are ambiguous cases, `False` is returned as the status.
+This `synth_hangul` feature has not come out yet.
+
 
 Large Texts
 ------------
@@ -76,11 +77,14 @@ large files, it is recommended to use the generator functions::
     >>> from jamo import hangul_to_jamo
     >>> long_story = open("구운몽.txt", 'r').read()
     >>> hangul_to_jamo(long_story)
-    <itertools.chain at 0x7f31baf89cc0>
+    <generator at 0x7f31baf89cc0>
 
 and for HCJ::
 
     >>> from jamo import hangul_to_hcj
     >>> long_story = open("구운몽.txt", 'r').read()
     >>> hangul_to_hcj(long_story)
-    <itertools.chain at 0x7f31baf89cc0>
+    <generator at 0x7f31baf89cc0>
+
+
+.. _Hangul representation in unicode: http://gernot-katzers-spice-pages.com/var/korean_hangul.html
